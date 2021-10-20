@@ -1,0 +1,47 @@
+diff --git a/src/main/java/controller/LiveController.java b/src/main/java/controller/LiveController.java
+index f7fc96c..22ffa88 100644
+--- a/src/main/java/controller/LiveController.java
++++ b/src/main/java/controller/LiveController.java
+@@ -70,7 +70,7 @@ public void goToMyLesson(MouseEvent mouseEvent) throws IOException {
+      */
+     public void sendText(MouseEvent mouseEvent) {
+         String text=chat.getText();
+-        String temp="hly: " +text + "\n";
++        String temp=LoginController.userName+": " +chat.getText() + "\n";
+         this.chats=this.chats+temp;
+         test.setText(this.chats);
+         test.setScrollTop(Double.MAX_VALUE);
+diff --git a/src/main/resources/database/Account.json b/src/main/resources/database/Account.json
+index f498ae2..fe64454 100644
+--- a/src/main/resources/database/Account.json
++++ b/src/main/resources/database/Account.json
+@@ -1,2 +1,2 @@
+ Current pk:8
+-[{"balance":0.0,"createTime":1622091155,"freeLiveLessonNum":0,"id":0,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"userTest1"},{"balance":0.0,"createTime":1622091155,"freeLiveLessonNum":0,"id":1,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"userTest2"},{"balance":0.0,"createTime":1622091155,"freeLiveLessonNum":0,"id":2,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"hly"},{"balance":8.1,"createTime":1622091155,"freeLiveLessonNum":0,"id":3,"notStartPremium":{},"orderId":[13,14],"premiumEndTime":1624784454,"premiumLevel":1,"username":"1"},{"balance":0.0,"createTime":1622091155,"freeLiveLessonNum":0,"id":4,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"2"},{"balance":0.0,"createTime":1622091155,"freeLiveLessonNum":0,"id":5,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"333"},{"balance":0.0,"createTime":1622442304,"freeLiveLessonNum":0,"id":6,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"Jerry"},{"balance":0.0,"createTime":1622442347,"freeLiveLessonNum":0,"id":7,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"jerry"}]
++[{"balance":0.0,"createTime":1622553387,"freeLiveLessonNum":0,"id":0,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"userTest1"},{"balance":0.0,"createTime":1622553387,"freeLiveLessonNum":0,"id":1,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"userTest2"},{"balance":0.0,"createTime":1622553387,"freeLiveLessonNum":0,"id":2,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"hly"},{"balance":0.0,"createTime":1622553387,"freeLiveLessonNum":0,"id":3,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"1"},{"balance":0.0,"createTime":1622553387,"freeLiveLessonNum":0,"id":4,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"2"},{"balance":0.0,"createTime":1622553387,"freeLiveLessonNum":0,"id":5,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"333"},{"balance":0.0,"createTime":1622553387,"freeLiveLessonNum":0,"id":6,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"Jerry"},{"balance":0.0,"createTime":1622553387,"freeLiveLessonNum":0,"id":7,"notStartPremium":{},"orderId":[],"premiumEndTime":0,"premiumLevel":0,"username":"jerry"}]
+diff --git a/src/main/resources/database/LiveLessonTable.json b/src/main/resources/database/LiveLessonTable.json
+index a06e5fe..054ef9e 100644
+--- a/src/main/resources/database/LiveLessonTable.json
++++ b/src/main/resources/database/LiveLessonTable.json
+@@ -1,2 +1,2 @@
+ Current pk:8
+-[{"id":0,"lessonList":[],"username":"userTest1"},{"id":1,"lessonList":[],"username":"userTest2"},{"id":2,"lessonList":[],"username":"hly"},{"id":3,"lessonList":[{"coachName":"Tian","createTime":1622530608360,"isCustomized":false,"lessonTime":1622595600000,"specificExercise":"","status":0,"target":"Reduce fat","username":"1"}],"username":"1"},{"id":4,"lessonList":[],"username":"2"},{"id":5,"lessonList":[],"username":"333"},{"id":6,"lessonList":[],"username":"Jerry"},{"id":7,"lessonList":[],"username":"jerry"}]
++[{"id":0,"lessonList":[],"username":"userTest1"},{"id":1,"lessonList":[],"username":"userTest2"},{"id":2,"lessonList":[],"username":"hly"},{"id":3,"lessonList":[],"username":"1"},{"id":4,"lessonList":[],"username":"2"},{"id":5,"lessonList":[],"username":"333"},{"id":6,"lessonList":[],"username":"Jerry"},{"id":7,"lessonList":[],"username":"jerry"}]
+diff --git a/src/main/resources/database/Order.json b/src/main/resources/database/Order.json
+index 6786fc7..b968510 100644
+--- a/src/main/resources/database/Order.json
++++ b/src/main/resources/database/Order.json
+@@ -1,2 +1,2 @@
+-Current pk:15
+-[{"createTime":1621348431095,"id":0,"liveLessonCreateTime":1621348431095,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621350815540,"id":1,"liveLessonCreateTime":0,"money":30.0,"premiumNum":1,"premiumType":1,"state":1,"type":0,"username":"111"},{"createTime":1621598341433,"id":2,"liveLessonCreateTime":1621598341433,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621599003614,"id":3,"liveLessonCreateTime":1621599003614,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621599049735,"id":4,"liveLessonCreateTime":1621599049735,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621599073460,"id":5,"liveLessonCreateTime":1621599073460,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621599526076,"id":6,"liveLessonCreateTime":1621599526076,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621600080637,"id":7,"liveLessonCreateTime":1621600080637,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621600181814,"id":8,"liveLessonCreateTime":1621600181814,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621600570673,"id":9,"liveLessonCreateTime":1621600570673,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621600704058,"id":10,"liveLessonCreateTime":1621600704058,"money":30,"premiumType":1,"state":2,"type":1,"username":"111"},{"createTime":1621600716862,"id":11,"liveLessonCreateTime":1621600716862,"money":30,"premiumType":1,"state":1,"type":1,"username":"111"},{"createTime":1621600770537,"id":12,"liveLessonCreateTime":1621600770537,"money":30,"premiumType":1,"state":1,"type":1,"username":"111"},{"createTime":1622192454923,"id":13,"liveLessonCreateTime":0,"money":9.9,"premiumNum":1,"premiumType":1,"state":1,"type":0,"username":"1"},{"createTime":1622530608360,"id":14,"liveLessonCreateTime":1622530608360,"money":30.0,"premiumNum":0,"premiumType":1,"state":0,"type":1,"username":"1"}]
++Current pk:0
++[]
+diff --git a/src/main/resources/database/Tag.json b/src/main/resources/database/Tag.json
+new file mode 100644
+index 0000000..b968510
+--- /dev/null
++++ b/src/main/resources/database/Tag.json
+@@ -0,0 +1,2 @@
++Current pk:0
++[]
+
