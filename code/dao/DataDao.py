@@ -1,6 +1,6 @@
-from MongoClient import MongoClient
+from dao.MongoClient import MongoClient
 
-
+#todo 考虑是否继续使用单例模式
 class DataDao(object):
     sheet = 'item'
 
@@ -16,7 +16,7 @@ class DataDao(object):
     @classmethod
     def find_repo(cls, owner, repo):
         itemCol = cls.get_instance().db[cls.sheet]
-        query = {"name": owner, "repo": repo}
+        query = {"owner": owner, "name": repo}
         result = itemCol.find_one(query)
         return result
 
@@ -41,5 +41,5 @@ class DataDao(object):
     def update_data(cls, data):
         dataId = data["_id"]
         itemCol = cls.get_instance().db[cls.sheet]
-        result = itemCol.update_one({"_id": dataId}, data)
+        result = itemCol.update_one({"_id": dataId}, {"$set":{"diff_list":data["diff_list"],"latest_pr_num":data["latest_pr_num"]}})
         return result is not None

@@ -1,4 +1,4 @@
-import Crawler
+from service import Crawler
 from dao.DataDao import DataDao
 
 
@@ -8,13 +8,8 @@ class DataService(object):
         self.repo = repo
         self.data_Dao = DataDao()
 
-    def validate_repo_latest(self, results):
-        if not results:
-            print("[WARNING]: " + self.owner + " " + self.repo + " cannot get prs")
-            return True
-        if not self.data_Dao.is_repo_exist(self.owner, self.repo):
-            return False, -1
-        firstNum = results[0]["number"]
+    def validate_repo_latest(self,firstNum):
+
         dbMaxNum = self.data_Dao.find_repo_max_pr(self.owner, self.repo)
         return firstNum == dbMaxNum, dbMaxNum
 
@@ -24,6 +19,7 @@ class DataService(object):
         else:
             item = crawler.get_repo_info()
             item["diff_list"] = results
+            item["latest_pr_num"] = item["diff_list"][-1]["number"]
             return self.insert_repo(item)
 
     def insert_repo(self, results):
@@ -31,5 +27,6 @@ class DataService(object):
 
     def update_repo(self, results):
         item = self.data_Dao.find_repo(self.owner, self.repo)
-        item["diff_list"].append(results)
+        item["diff_list"].extend(results)
+        item["latest_pr_num"] = item["diff_list"][-1]["number"]
         return self.data_Dao.update_data(item)
