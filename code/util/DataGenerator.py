@@ -19,8 +19,10 @@ class DataGenerator:
         return result
 
     @classmethod
-    def generate_repo_head_data(cls, data):
+    def generate_repo_head_data(cls, data, owner):
         result = {}
         for label in DataGenerator.repo_lavels:
             result[label] = data[label]
+        result["owner"] = owner
+        result["latest_pr_num"] = 0
         return result
