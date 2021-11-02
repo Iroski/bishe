@@ -1,9 +1,6 @@
-import http
-from urllib.request import urlopen
-from urllib.request import Request
-import json
 from util.ConfigDealer import ConfigDealer
 import os
+from util.decorator.crawlerDecorator import *
 
 import requests
 from util.DataGenerator import DataGenerator
@@ -29,103 +26,53 @@ class Crawler(object):
         if not os.path.exists(path):
             os.makedirs(path)
 
-    def validate_repo(self, times=0):
-        try:
-            url = 'https://api.github.com/repos/{owner}/{repo}'.format(
+    @catch_validation_error
+    def validate_repo(self):
+        # try:
+        url = 'https://api.github.com/repos/{owner}/{repo}'.format(
                 owner=self.owner, repo=self.repo)
+        r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
+        result = r.json()
+        if 'message' in result:
+            return result['message']
+        return True
+
+    @catch_get_pr_page_results_not_deal_error
+    def get_pr_page_results_not_deal(self,page = 1):
+        result = []
+        while page == 1 or result != []:
+            url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed&page={page}&direction=asc'.format(
+                owner=self.owner, repo=self.repo, page=page)
             r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
             result = r.json()
-            if 'message' in result:
-                print(result['message'])
-                return False
-            return True
-        except Exception as e:
-            if times < 5:
-                print('error validation')
-                times += 1
-                self.validate_repo(times)
-            else:
-                print(
-                    "[ERROR] time out at validate repo with " + self.owner + " " + self.repo)
-            raise Exception
+            yield result,page
+            page = page + 1
 
-    def get_pr_page_results_not_deal(self, times=0):
-        try:
-            result = []
-            page = 1
-            while page == 1 or result != []:
-                url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed&page={page}&direction=asc'.format(
-                    owner=self.owner, repo=self.repo, page=page)
-                r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
-                result = r.json()
-                yield result
-                page = page + 1
-        except Exception as e:
-            if times < 5:
-                print('error get per page')
-                times += 1
-                self.get_pr_page_results_not_deal(times)
-            else:
-                print(
-                    "[ERROR] time out at getting repo page result with " + self.owner + " " + self.repo)
-            raise Exception
+    @catch_deal_diff_error
+    def deal_diff(self, item):
 
-    def deal_diff(self, item, times=0):
-        try:
-            path = self.diff_path + '/' + self.owner + '/' + self.repo + '/' + str(item["number"]) + ".diff"
-            url = 'https://github.com/{owner}/{repo}/pull/{number}.diff' \
+        path = self.diff_path + '/' + self.owner + '/' + self.repo + '/' + str(item["number"]) + ".diff"
+        url = 'https://github.com/{owner}/{repo}/pull/{number}.diff' \
                 .format(owner=self.owner, repo=self.repo, number=item["number"])
-            print(item["number"])
-            # req = Request(url, headers=diff_header)
-            # # req.set_proxy('127.0.0.1:7890', 'https')  # todo 抽离代理输入位置
-            # response = urlopen(req, timeout=30).read()
-            r = requests.get(url, headers=self.diff_header, proxies=self.proxies)
-            response = r.text
-            with open(path, 'w', encoding='utf-8') as f:
-                print(response, file=f)
-            item["diff_local_path"] = path
-            return item
-        except Exception as e:
-            if times < 5:
-                print('error getting diff')
-                times += 1
-                self.deal_diff(item, times)
-            else:
-                print(
-                    "[ERROR] time out at getting diff files with " + self.owner + " " + self.repo + " diff number:" + str(
-                        item["number"]))
-            raise Exception
+        r = requests.get(url, headers=self.diff_header, proxies=self.proxies)
+        response = r.text
+        with open(path, 'w', encoding='utf-8') as f:
+            print(response, file=f)
+        item["diff_local_path"] = path
+        return item
 
-    def get_repo_info(self, times=0):
-        try:
-            url = 'https://api.github.com/repos/{owner}/{repo}'.format(
-                owner=self.owner, repo=self.repo)
-            r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
-            result = r.json()
-            return DataGenerator.generate_repo_head_data(result, self.owner)
-        except Exception as e:
-            if times < 5:
-                print('error get repo info')
-                times += 1
-                self.get_repo_info(times)
-            else:
-                print(
-                    "[ERROR] time out at getting repo info with " + self.owner + " " + self.repo)
-            raise Exception
+    @catch_get_repo_info_error
+    def get_repo_info(self):
+        url = 'https://api.github.com/repos/{owner}/{repo}'.format(
+            owner=self.owner, repo=self.repo)
+        r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
+        result = r.json()
+        return DataGenerator.generate_repo_head_data(result, self.owner)
 
-    def get_max_pr_num(self, times=0):
-        try:
-            url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed'.format(
+    @catch_get_max_pr_num_error
+    def get_max_pr_num(self):
+        url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed'.format(
                 owner=self.owner, repo=self.repo)
-            r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
-            result = r.json()
-            return result[0]["number"]
-        except Exception as e:
-            if times < 5:
-                print('error get per page')
-                times += 1
-                self.get_pr_page_results_not_deal(times)
-            else:
-                print(
-                    "[ERROR] time out at getting max pr num with " + self.owner + " " + self.repo)
-            raise Exception
+        r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
+        result = r.json()
+        return result[0]["number"]

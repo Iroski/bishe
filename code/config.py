@@ -17,12 +17,15 @@ HTTPS_PROXY = '127.0.0.1:7890'
     程序会自动寻找上一级文件夹并拼接相对路径
     选择False,则DIFF_PATH为绝对路径
 """
-DIFF_PATH = "pr_diff"
+DIFF_PATH = "pr_diff\\"
 DIFF_PATH_DEFAULT=True
 
 """存放仓库的位置,每一行为owner repo, 中间用/t分隔 """
 STORE_PATH = "code\store.tsv"
 STORE_PATH_DEFAULT=True
+
+LOG_PATH="logs\\"
+LOG_PATH_DEFAULT=True
 
 """github token可以使同token访问次数从每小时60提升至5000"""
 token=['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',
