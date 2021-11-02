@@ -9,8 +9,7 @@ class ConfigDealer(object):
         self.token_size = len(config.token)
         self.repo_pointer = 0
         self.rlock = RLock()
-        self.path = os.path.abspath('..')+'\\'
-
+        self.path=os.path.abspath("..")+'\\'
     @classmethod
     def init(cls):
         ConfigDealer._instance = ConfigDealer()
@@ -22,9 +21,7 @@ class ConfigDealer(object):
         return ConfigDealer._instance
 
     def get_diff_path(self):
-        if config.DIFF_PATH_DEFAULT:
-            return self.path+config.DIFF_PATH
-        return config.DIFF_PATH
+        return self.path+config.DIFF_PATH if config.DIFF_PATH_DEFAULT else config.DIFF_PATH
 
     def get_token(self):
         self.rlock.acquire()
@@ -53,7 +50,10 @@ class ConfigDealer(object):
 
     @classmethod
     def load_local_repos(cls) -> pd.DataFrame:
-        path= cls.get_instance().path+config.STORE_PATH if config.STORE_PATH_DEFAULT is True else config.STORE_PATH
+        path= cls.get_instance().path+config.STORE_PATH if config.STORE_PATH_DEFAULT  else config.STORE_PATH
         return pd.read_csv(path, sep='\t')
 
+    @classmethod
+    def get_log_path(cls):
+        return cls.get_instance().path+config.LOG_PATH if config.LOG_PATH_DEFAULT else config.LOG_PATH
 

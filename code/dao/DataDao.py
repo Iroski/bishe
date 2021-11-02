@@ -24,7 +24,7 @@ class DataDao(object):
     def find_repo_max_pr(cls, owner, repo) -> int:
         item = cls.find_repo(owner, repo)
         if item == None:
-            return -1
+            return 0
         return item["latest_pr_num"]
 
     @classmethod
