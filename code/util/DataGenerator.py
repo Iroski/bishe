@@ -1,7 +1,7 @@
+from config import DIFF_LABELS,REPO_LABELS
 class DataGenerator:
-    diff_labels = ["number", "url", "diff_url", "issue_url", "state", "title", "body", "created_at",
-                   "merged_at", "base"]
-    repo_lavels = ["id", "name", "language", "created_at"]
+    diff_labels = DIFF_LABELS
+    repo_labels = REPO_LABELS
 
     def __init__(self, *dlabels):
         if dlabels is not None:
@@ -21,7 +21,7 @@ class DataGenerator:
     @classmethod
     def generate_repo_head_data(cls, data, owner):
         result = {}
-        for label in DataGenerator.repo_lavels:
+        for label in DataGenerator.repo_labels:
             result[label] = data[label]
         result["owner"] = owner
         result["latest_pr_num"] = 0

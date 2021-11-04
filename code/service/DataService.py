@@ -27,6 +27,8 @@ class DataService(object):
 
     def update_repo(self, results):
         item = self.data_Dao.find_repo(self.owner, self.repo)
-        item["diff_list"].extend(results)
+        for i in results:
+            if i not in item["diff_list"]:
+                item["diff_list"].append(i)
         item["latest_pr_num"] = item["diff_list"][-1]["number"]
         return self.data_Dao.update_data(item)

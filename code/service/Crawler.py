@@ -14,7 +14,7 @@ class Crawler(object):
     def __init__(self, owner, repo):
         self.owner = owner
         self.repo = repo
-        self.configDealer=ConfigDealer.get_instance()
+        self.configDealer = ConfigDealer.get_instance()
         self.pr_header, self.diff_header = self.configDealer.get_headers()
         self.diff_path = self.configDealer.get_diff_path()
         self.proxies = self.configDealer.get_proxy()
@@ -30,7 +30,7 @@ class Crawler(object):
     def validate_repo(self):
         # try:
         url = 'https://api.github.com/repos/{owner}/{repo}'.format(
-                owner=self.owner, repo=self.repo)
+            owner=self.owner, repo=self.repo)
         r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
         result = r.json()
         if 'message' in result:
@@ -38,14 +38,14 @@ class Crawler(object):
         return True
 
     @catch_get_pr_page_results_not_deal_error
-    def get_pr_page_results_not_deal(self,page = 1):
+    def get_pr_page_results_not_deal(self, page=1):
         result = []
         while page == 1 or result != []:
             url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed&page={page}&direction=asc'.format(
                 owner=self.owner, repo=self.repo, page=page)
             r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
             result = r.json()
-            yield result,page
+            yield result, page
             page = page + 1
 
     @catch_deal_diff_error
@@ -53,7 +53,7 @@ class Crawler(object):
 
         path = self.diff_path + '/' + self.owner + '/' + self.repo + '/' + str(item["number"]) + ".diff"
         url = 'https://github.com/{owner}/{repo}/pull/{number}.diff' \
-                .format(owner=self.owner, repo=self.repo, number=item["number"])
+            .format(owner=self.owner, repo=self.repo, number=item["number"])
         r = requests.get(url, headers=self.diff_header, proxies=self.proxies)
         response = r.text
         with open(path, 'w', encoding='utf-8') as f:
@@ -72,7 +72,14 @@ class Crawler(object):
     @catch_get_max_pr_num_error
     def get_max_pr_num(self):
         url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed'.format(
-                owner=self.owner, repo=self.repo)
+            owner=self.owner, repo=self.repo)
         r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
         result = r.json()
         return result[0]["number"]
+
+    def get_popular_repo_per_page(self, language, page, per_page):
+        url = 'https://api.github.com/search/repositories?q=language:{language}&sort=stars&page={page}' \
+              '&per_page={per_page}'.format(language=language, page=page, per_page=per_page)
+        r = requests.get(url, headers=self.configDealer.get_headers()[0], proxies=self.proxies)
+        result = r.json()
+        return result

@@ -38,7 +38,7 @@ token=['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',
 pr_header = {'User-Agent': 'Mozilla/5.0',
              'Authorization': '',
              'Content-Type': 'application/json',
-             'Accept': 'application/vnd.github.v3+json'
+             'Accept': 'application/vnd.github.v3+json',
              }
 diff_header = {'User-Agent': 'Mozilla/5.0',
                'Authorization': '',
@@ -50,3 +50,8 @@ diff_header = {'User-Agent': 'Mozilla/5.0',
 DIFF_LABELS = ["number", "url", "diff_url", "issue_url", "state", "title", "body", "created_at",
                    "merged_at", "base"]
 REPO_LABELS = ["id", "name", "language", "created_at"]
+
+INVALID_WORD=['面试','Leetcode','leetcode','指南','知识','题目','Interview',
+              '扫盲','interview','排行榜','教程','学习','成神']
+
+HOT_REPO_PER_PAGE=60
