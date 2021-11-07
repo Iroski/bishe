@@ -18,17 +18,23 @@ class DataLoader:
         self.crawler = Crawler(owner, repo)
 
     def get_pr_page_results(self) -> list:
-        for items in self.crawler.get_pr_page_results_not_deal():
+        page=1
+
+        items=self.crawler.get_pr_page_results_not_deal(page)
+        while len(items) !=0:
             result = []
             for item in items:
                 result.append(DataGenerator.generate_diff_data(item))
             yield result
+            page+=1
+            items = self.crawler.get_pr_page_results_not_deal(page)
+
 
     @catch_data_loader_error
     def get_result(self):
         # num = 0  # todo 测试用
         if self.crawler.validate_repo():
-            is_latest, dbMaxNum = self.data_service.validate_repo_latest(self.crawler.get_max_pr_num())
+            is_latest, dbMaxNum = self.data_service.validate_repo_latest(self.crawler.get_max_pr_num()[0]["number"])
             if is_latest:
                 return REPO_IS_LATEST
             for results in self.get_pr_page_results():

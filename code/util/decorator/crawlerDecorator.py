@@ -28,7 +28,7 @@ def catch_validation_error(func):
                 logger.error(
                     "Five time out at validate repo with " + self.owner + " " + self.repo)
                 logger.error("Token: " + self.pr_header['Authorization'])
-                logger.error(e)
+                logger.exception(e)
                 raise TimeOutException
         except Exception as e:
             logger.error("Error at validation")
@@ -56,7 +56,7 @@ def catch_deal_diff_error(func):
                 logger.error(
                     "Five time out at getting diff with " + self.owner + " " + self.repo + " number:" + str(item["number"]))
                 logger.error("Token: " + self.pr_header['Authorization'])
-                logger.error(e)
+                logger.exception(e)
                 raise DiffException
         except Exception as e:
             logger.error("Error at getting diff")
@@ -70,6 +70,11 @@ def catch_get_repo_info_error(func):
         logger = logging.getLogger('Repo_info ' + threading.current_thread().name[-3:])
         try:
             result = func(self, *args, **kwargs)
+            if 'message' in result:
+                logger.warning("Internal error: " + self.owner + " " + self.repo)
+                logger.warning(result['message'])
+                logger.warning("Token: " + self.pr_header['Authorization'])
+                raise RequestException
             return result
         except RequestException as e:
             if times < 5:
@@ -79,11 +84,11 @@ def catch_get_repo_info_error(func):
             else:
                 logger.error(
                     "Five time out get repo info with " + self.owner + " " + self.repo)
-                logger.error(e)
+                logger.exception(e)
                 raise TimeOutException
         except Exception as e:
             logger.error("Internal error: " + self.owner + " " + self.repo)
-            logger.error(e)
+            logger.exception(e)
             logger.error("Token: " + self.pr_header['Authorization'])
             raise WebsiteException
 
@@ -95,6 +100,11 @@ def catch_get_max_pr_num_error(func):
         logger = logging.getLogger('Max_pr ' + threading.current_thread().name[-3:])
         try:
             result = func(self, *args, **kwargs)
+            if 'message' in result:
+                logger.warning("Internal error: " + self.owner + " " + self.repo)
+                logger.warning(result['message'])
+                logger.warning("Token: " + self.pr_header['Authorization'])
+                raise RequestException
             return result
         except RequestException as e:
             if times < 5:
@@ -105,44 +115,46 @@ def catch_get_max_pr_num_error(func):
                 logger.error(
                     "Five time out at get repo max num with " + self.owner + " " + self.repo)
                 logger.error("token:"+self.pr_header['Authorization'])
-                logger.error(e)
+                logger.exception(e)
                 raise TimeOutException
         except BaseException as e:
             logger.error("Internal error " + self.owner + " " + self.repo)
-            logger.error(e)
+            logger.exception(e)
             logger.error("Token: " + self.pr_header['Authorization'])
             raise WebsiteException
         except Exception as e:
             logger.error("Error at get max num")
             logger.error("token:" + self.pr_header['Authorization'])
-            logger.error(e)
+            logger.exception(e)
             raise Exception(e)
 
     return wrapper
 
 
 def catch_get_pr_page_results_not_deal_error(func):
-    def wrapper(self, times=0, tpage=1):
+    def wrapper(self, tpage, times=0):
         logger = logging.getLogger('Page result ' + threading.current_thread().name[-3:])
         try:
-            for result, page in func(self, tpage):
+            result =func(self, tpage)
 
-                logger.debug('Getting ' + self.owner + " " + self.repo + " page: " + str(page))
-                if type(result) == str:
-                    logger.error("Internal error: " + self.owner + " " + self.repo)
-                    logger.error("Token: " + self.pr_header['Authorization'])
-                    raise WebsiteException
-                yield result
-                tpage+=1
+            logger.debug('Getting ' + self.owner + " " + self.repo + " page: " + str(tpage))
+            if 'message' in result:
+                logger.warning("Internal error: " + self.owner + " " + self.repo)
+                logger.warning(result['message'])
+                logger.warning("Token: " + self.pr_header['Authorization'])
+                raise RequestException
+
+            return result
+
         except RequestException as e:
             if times < 5:
-                logger.warning('Failure happen with ' + self.owner + " " + self.repo)
+                logger.warning('Failure happen with ' + self.owner + " " + self.repo+" page: "+str(tpage))
                 times += 1
-                return wrapper(self,times,tpage)
+                return wrapper(self,tpage,times)
             else:
                 logger.error(
-                            "Five time out at getting page with " + self.owner + " " + self.repo)
-                logger.error(e)
+                            "Five time out at getting page with " + self.owner + " " + self.repo+" page: "+str(tpage))
+                logger.exception(e)
                 logger.debug("Repository: " + self.owner + " " + self.repo + " will exit")
                 return []
         except Exception as e:

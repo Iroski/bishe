@@ -25,7 +25,7 @@ def catch_data_loader_error(func):
             raise TimeOutException
         except Exception as e:
             logger.critical("System error")
-            logger.error(e)
+            logger.exception(e)
             raise Exception
 
     return wrapper

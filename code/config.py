@@ -8,8 +8,8 @@ TABLE="bug_lib"
 """ 代理路径，推荐使用代理。系统已增加断连重试机制（5次），但非代理下仍会有极大概率失败
     免费github代理：dev_sidecar 
 """
-HTTP_PROXY = '127.0.0.1:7890'
-HTTPS_PROXY = '127.0.0.1:7890'
+HTTP_PROXY = '127.0.0.1:1181'
+HTTPS_PROXY = '127.0.0.1:1181'
 
 """ diff文件存放路径，具体为“DIFF_PATH/owner/repo/x.diff”
 
