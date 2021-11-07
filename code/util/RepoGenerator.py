@@ -6,7 +6,7 @@ class RepoGenerator(object):
 
     @classmethod
     def generate_repo_header(cls, result):
-        items = result['items']
+        items = result['items'] if result['items'] is not None else []
         df = pd.DataFrame(columns=['owner', 'repo'])
         for item in items:
             if cls.check_repo_valid(item['full_name'], item['description']):

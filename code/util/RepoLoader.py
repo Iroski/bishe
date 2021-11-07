@@ -3,6 +3,7 @@ from util.ConfigDealer import ConfigDealer
 from math import ceil
 from pandas import concat
 from util.RepoGenerator import RepoGenerator
+from util.decorator.reportLoaderDecorator import catch_repo_loader_error
 
 
 class RepoLoader(object):
@@ -14,7 +15,7 @@ class RepoLoader(object):
         self.start_page = start_page
         self.crawler = Crawler(' ', ' ')
 
-    # todo decorator
+    @catch_repo_loader_error
     def get_popular_repo(self):
         pages = ceil(self.num / self.per_page)
         for i in range(self.start_page, self.start_page + pages):

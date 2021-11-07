@@ -74,6 +74,7 @@ class Crawler(object):
         result = r.json()
         return result
 
+    @catch_get_popular_repo_per_page_error
     def get_popular_repo_per_page(self, language, page, per_page):
         url = 'https://api.github.com/search/repositories?q=language:{language}&sort=stars&page={page}' \
               '&per_page={per_page}'.format(language=language, page=page, per_page=per_page)

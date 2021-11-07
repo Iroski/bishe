@@ -53,10 +53,16 @@ proxies = {'http': '127.0.0.1:1181', 'https': '127.0.0.1:1181'}
 # print(result)
 
 '''test per diff'''
-url = 'https://api.github.com/repos/{owner}/{repo}/pulls/{number}'.format(
-            owner="google", repo="guava",number=5698)
-proxies = {'http': '127.0.0.1:7890', 'https': '127.0.0.1:7890'}
-r = requests.get(url, headers=pr_header, proxies=proxies)
-result = r.json()
-print(result)
-print(result['merged_at'])
+# url = 'https://api.github.com/repos/{owner}/{repo}/pulls/{number}'.format(
+#             owner="google", repo="guava",number=5698)
+# proxies = {'http': '127.0.0.1:7890', 'https': '127.0.0.1:7890'}
+# r = requests.get(url, headers=pr_header, proxies=proxies)
+# result = r.json()
+# print(result)
+# print(result['merged_at'])
+
+
+# from util.ConfigDealer import ConfigDealer
+# from util.RepoLoader import RepoLoader
+# data = ConfigDealer.load_local_repos()
+# RepoLoader.init(data,'java',60)

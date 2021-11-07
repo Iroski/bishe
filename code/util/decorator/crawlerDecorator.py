@@ -162,3 +162,34 @@ def catch_get_pr_page_results_not_deal_error(func):
             raise Exception(e)
 
     return wrapper
+
+def catch_get_popular_repo_per_page_error(func):
+    def wrapper(self, language, page, per_page, times=0):
+        logger = logging.getLogger('Popular page ' + threading.current_thread().name[-3:])
+        try:
+            result =func(self, language, page, per_page)
+
+            logger.debug('Getting popular: ' + language + " page: " + str(page))
+            if 'message' in result:
+                logger.warning("Internal error: " + 'Getting popular: ' + language + " page: " + str(page))
+                logger.warning(result['message'])
+                logger.warning("Token: " + self.pr_header['Authorization'])
+                raise RequestException
+
+            return result
+
+        except RequestException as e:
+            if times < 5:
+                logger.warning('Failure happen with ' + 'Getting popular: ' + language+" page: "+str(page))
+                times += 1
+                return wrapper(self, language, page, per_page,times)
+            else:
+                logger.error(
+                            "Five time out at getting popular: " + language+" page: "+str(page))
+                logger.exception(e)
+                raise TimeOutException
+        except Exception as e:
+            logger.error("Error at get popular page result")
+            raise Exception(e)
+
+    return wrapper
