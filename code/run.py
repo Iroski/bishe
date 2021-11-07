@@ -16,12 +16,12 @@ def init(args):
         return data
 
 if __name__ == '__main__':
-    #todo 热榜，数据库验证
+    #todo 最新验证，增加模式
     parser = argparse.ArgumentParser(description='manual to this script')
     parser.add_argument('--thread-num', '-tn', type=int, default=4)
     parser.add_argument('--hot-repo','-hr',action='store_true',default=False)
     parser.add_argument('--language','-l',type=str,default='java')
-    parser.add_argument('--num','-n',type=int,default=0)
+    parser.add_argument('--num','-n',type=int,default=60)
     parser.add_argument('--start-page','-sp',type=int,default=0)
     parser.add_argument('--stop-when-error','-sw',action='store_true',default=False)
     args = parser.parse_args()
@@ -39,4 +39,4 @@ if __name__ == '__main__':
         for task in reversed(task_list):
             task.cancel()
         wait(task_list, return_when=ALL_COMPLETED)
-    print("main finish")
+

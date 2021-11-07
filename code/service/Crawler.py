@@ -38,15 +38,12 @@ class Crawler(object):
         return True
 
     @catch_get_pr_page_results_not_deal_error
-    def get_pr_page_results_not_deal(self, page=1):
-        result = []
-        while page == 1 or result != []:
-            url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed&page={page}&direction=asc'.format(
+    def get_pr_page_results_not_deal(self, page):
+        url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed&page={page}&direction=asc'.format(
                 owner=self.owner, repo=self.repo, page=page)
-            r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
-            result = r.json()
-            yield result, page
-            page = page + 1
+        r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
+        result = r.json()
+        return result
 
     @catch_deal_diff_error
     def deal_diff(self, item):
@@ -75,8 +72,9 @@ class Crawler(object):
             owner=self.owner, repo=self.repo)
         r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
         result = r.json()
-        return result[0]["number"]
+        return result
 
+    @catch_get_popular_repo_per_page_error
     def get_popular_repo_per_page(self, language, page, per_page):
         url = 'https://api.github.com/search/repositories?q=language:{language}&sort=stars&page={page}' \
               '&per_page={per_page}'.format(language=language, page=page, per_page=per_page)
