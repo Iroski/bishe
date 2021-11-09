@@ -96,21 +96,22 @@ def catch_get_repo_info_error(func):
 
 
 def catch_get_max_pr_num_error(func):
-    def wrapper(self, times=0, *args, **kwargs):
+    def wrapper(self, times=0,page=0):
         logger = logging.getLogger('Max_pr ' + threading.current_thread().name[-3:])
         try:
-            result = func(self, *args, **kwargs)
+            result = func(self,page)
+            if type(result) is int:
+                return result
             if 'message' in result:
                 logger.warning("Internal error: " + self.owner + " " + self.repo)
                 logger.warning(result['message'])
                 logger.warning("Token: " + self.pr_header['Authorization'])
                 raise RequestException
-            return result
         except RequestException as e:
             if times < 5:
                 logger.warning('Failure happen with' + self.owner + " " + self.repo)
                 times += 1
-                return wrapper(self, times, *args, **kwargs)
+                return wrapper(self, times,page)
             else:
                 logger.error(
                     "Five time out at get repo max num with " + self.owner + " " + self.repo)

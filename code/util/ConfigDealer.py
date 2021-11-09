@@ -23,7 +23,10 @@ class ConfigDealer(object):
         return ConfigDealer._instance
 
     def get_diff_path(self):
-        return self.path + config.DIFF_PATH if config.DIFF_PATH_DEFAULT else config.DIFF_PATH
+        path=self.path + config.DIFF_PATH if config.DIFF_PATH_DEFAULT else config.DIFF_PATH
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
 
     def get_token(self):
         self.rlock.acquire()
@@ -47,6 +50,8 @@ class ConfigDealer(object):
         return pr_header, diff_header
 
     def get_proxy(self):
+        if not config.USE_PROXY:
+            return None
         proxies = {'http': config.HTTP_PROXY, 'https': config.HTTPS_PROXY}
         return proxies
 
@@ -62,7 +67,10 @@ class ConfigDealer(object):
 
     @classmethod
     def get_log_path(cls):
-        return cls.get_instance().path + config.LOG_PATH if config.LOG_PATH_DEFAULT else config.LOG_PATH
+        path=cls.get_instance().path + config.LOG_PATH if config.LOG_PATH_DEFAULT else config.LOG_PATH
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
 
     @classmethod
     def get_invalid_word(cls):

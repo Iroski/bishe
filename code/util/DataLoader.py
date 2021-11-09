@@ -33,7 +33,7 @@ class DataLoader:
     @catch_data_loader_error
     def get_result(self):
         if self.crawler.validate_repo():
-            is_latest, dbMaxNum = self.data_service.validate_repo_latest(self.crawler.get_max_pr_num()[0]["number"])
+            is_latest, dbMaxNum = self.data_service.validate_repo_latest(self.crawler.get_max_pr_num())
             if is_latest:
                 return REPO_IS_LATEST
             for results in self.get_pr_page_results():

@@ -40,7 +40,7 @@ class Crawler(object):
     @catch_get_pr_page_results_not_deal_error
     def get_pr_page_results_not_deal(self, page):
         url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed&page={page}&direction=asc'.format(
-                owner=self.owner, repo=self.repo, page=page)
+            owner=self.owner, repo=self.repo, page=page)
         r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
         result = r.json()
         return result
@@ -48,7 +48,7 @@ class Crawler(object):
     @catch_deal_diff_error
     def deal_diff(self, item):
 
-        path = self.diff_path + '/' + self.owner + '/' + self.repo + '/' + str(item["number"]) + ".diff"
+        path = self.diff_path + self.owner + '\\' + self.repo + '\\' + str(item["number"]) + ".diff"
         url = 'https://github.com/{owner}/{repo}/pull/{number}.diff' \
             .format(owner=self.owner, repo=self.repo, number=item["number"])
         r = requests.get(url, headers=self.diff_header, proxies=self.proxies)
@@ -67,11 +67,19 @@ class Crawler(object):
         return DataGenerator.generate_repo_head_data(result, self.owner)
 
     @catch_get_max_pr_num_error
-    def get_max_pr_num(self):
-        url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed'.format(
-            owner=self.owner, repo=self.repo)
-        r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
-        result = r.json()
+    def get_max_pr_num(self, page=0):
+        result = []
+        while page == 0 or result != []:
+            url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed&page={page}'.format(
+                owner=self.owner, repo=self.repo, page=page)
+            r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
+            result = r.json()
+            page += 1
+            if 'message' in result:
+                return result
+            for item in result:
+                if item['merged_at'] is not None:
+                    return item['number']
         return result
 
     @catch_get_popular_repo_per_page_error
