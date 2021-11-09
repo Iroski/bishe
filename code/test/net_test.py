@@ -61,8 +61,5 @@ proxies = {'http': '127.0.0.1:1181', 'https': '127.0.0.1:1181'}
 # print(result)
 # print(result['merged_at'])
 
-
-# from util.ConfigDealer import ConfigDealer
-# from util.RepoLoader import RepoLoader
-# data = ConfigDealer.load_local_repos()
-# RepoLoader.init(data,'java',60)
+# giao=Crawler('alibaba','druid')
+# print(giao.get_max_pr_num())
