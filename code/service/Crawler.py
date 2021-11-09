@@ -11,11 +11,12 @@ context = ssl._create_unverified_context()
 
 
 class Crawler(object):
-    def __init__(self, owner, repo):
+    def __init__(self, owner, repo, token_ptr,process):
         self.owner = owner
         self.repo = repo
+        self.process=process
         self.configDealer = ConfigDealer.get_instance()
-        self.pr_header, self.diff_header = self.configDealer.get_headers()
+        self.pr_header, self.diff_header = self.configDealer.get_headers(token_ptr)
         self.diff_path = self.configDealer.get_diff_path()
         self.proxies = self.configDealer.get_proxy()
 
@@ -86,6 +87,6 @@ class Crawler(object):
     def get_popular_repo_per_page(self, language, page, per_page):
         url = 'https://api.github.com/search/repositories?q=language:{language}&sort=stars&page={page}' \
               '&per_page={per_page}'.format(language=language, page=page, per_page=per_page)
-        r = requests.get(url, headers=self.configDealer.get_headers()[0], proxies=self.proxies)
+        r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
         result = r.json()
         return result

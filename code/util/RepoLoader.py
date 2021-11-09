@@ -13,7 +13,7 @@ class RepoLoader(object):
         self.data = data
         self.per_page = per_page
         self.start_page = start_page
-        self.crawler = Crawler(' ', ' ')
+        self.crawler = Crawler(' ', ' ',0,"hot repo")
 
     @catch_repo_loader_error
     def get_popular_repo(self):

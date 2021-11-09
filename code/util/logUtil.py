@@ -4,7 +4,7 @@ import logging
 import logging.config
 import logging.handlers
 from util.ConfigDealer import ConfigDealer
-
+import concurrent_log
 
 class ConsoleFilter(logging.Filter):
 
@@ -21,7 +21,7 @@ def get_log_file_name():
     return path + cur_time
 
 
-def init_logger():
+def init_logger(log_name):
     config = {
         'version': 1,  # 必填项，值只能为1
         'disable_existing_loggers': True,
@@ -51,11 +51,12 @@ def init_logger():
                     'filters':['consoleFilter']# 选填，这里要填写formatters字典中的键
                 },
                 'file_handler': {
-                    'class': 'logging.handlers.RotatingFileHandler',  # 必填，处理器对应的类
+                    'class': 'logging.handlers.ConcurrentTimedRotatingFileHandler',  # 必填，处理器对应的类
                     'level': logging.NOTSET,  # 选填，处理器的日志级别，可填字符串'info'，或者logging.INFO
                     'formatter': 'myformatter1',  # 选填，这里要填写formatters字典中的键
-                    'filename': get_log_file_name() + '.log',  # filehandler特有参数，文件名
-                    'maxBytes': 1024 * 1024 * 10,  # 文件大小
+                    'filename': log_name + '.log',  # filehandler特有参数，文件名
+                    'when': 'H',
+                    'delay': True,
                     'backupCount': 2,  # 备份数量
                     'encoding': 'UTF-8',  # 编码格式
                 }

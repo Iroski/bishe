@@ -1,21 +1,26 @@
 # -*- coding: utf-8 -*-
+from time import sleep
 
 from util.DataGenerator import DataGenerator
 from service.DataService import DataService
 from service.Crawler import Crawler
+from util.logUtil import init_logger
 from util.decorator.dataLoaderDecorator import catch_data_loader_error
 from pprint import pprint
 import threading
+
+from util.logUtil import init_logger
 
 REPO_IS_LATEST = -3
 
 
 class DataLoader:
-    def __init__(self, owner, repo):
+    def __init__(self, owner, repo, token_ptr,process):
         self.owner = owner
         self.repo = repo
+        self.process=process
         self.data_service = DataService(self.owner, self.repo)
-        self.crawler = Crawler(owner, repo)
+        self.crawler = Crawler(owner, repo, token_ptr,process)
 
     def get_pr_page_results(self) -> list:
         page=1
@@ -55,10 +60,11 @@ class DataLoader:
         result = self.get_pr_page_results()
 
 
-def start_getting_info(arg):
-    # pprint(threading.current_thread().name)
-    # pprint("1")
-    # pprint(arg[0])
-    # pprint(arg[1])
-    a = DataLoader(arg[0], arg[1])
+def start_getting_info(owner,repo,token_ptr,process,log_name):
+    # print(owner)
+    # print(repo)
+    # print(token_ptr)
+    # print(process)
+    init_logger(log_name)
+    a = DataLoader(owner, repo,token_ptr,process)
     a.get_result()

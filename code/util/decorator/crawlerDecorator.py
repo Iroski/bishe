@@ -6,8 +6,9 @@ from exception.exceptions import *
 
 def catch_validation_error(func):
     def wrapper(self, times=0, *args, **kwargs):
-        logger = logging.getLogger('Validation ' + threading.current_thread().name[-3:])
+        logger = logging.getLogger('Validation ' + str(self.process))
         try:
+            logger.debug("start validate: "+self.owner+" "+self.repo+" token: "+ self.pr_header['Authorization'])
             result = func(self, *args, **kwargs)
             if type(result) == str:
                 if result == "Not Found":
@@ -39,7 +40,7 @@ def catch_validation_error(func):
 
 def catch_deal_diff_error(func):
     def wrapper(self, item, times=0):
-        logger = logging.getLogger('Diff ' + threading.current_thread().name[-3:])
+        logger = logging.getLogger('Diff ' + str(self.process))
         try:
             if times == 0:
                 logger.debug("Start get diff:" + self.owner + " " + self.repo + " number:" + str(item["number"]))
@@ -67,7 +68,7 @@ def catch_deal_diff_error(func):
 
 def catch_get_repo_info_error(func):
     def wrapper(self, times=0, *args, **kwargs):
-        logger = logging.getLogger('Repo_info ' + threading.current_thread().name[-3:])
+        logger = logging.getLogger('Repo_info ' + str(self.process))
         try:
             result = func(self, *args, **kwargs)
             if 'message' in result:
@@ -97,7 +98,7 @@ def catch_get_repo_info_error(func):
 
 def catch_get_max_pr_num_error(func):
     def wrapper(self, times=0,page=0):
-        logger = logging.getLogger('Max_pr ' + threading.current_thread().name[-3:])
+        logger = logging.getLogger('Max_pr ' + str(self.process))
         try:
             result = func(self,page)
             if type(result) is int:
@@ -134,7 +135,7 @@ def catch_get_max_pr_num_error(func):
 
 def catch_get_pr_page_results_not_deal_error(func):
     def wrapper(self, tpage, times=0):
-        logger = logging.getLogger('Page result ' + threading.current_thread().name[-3:])
+        logger = logging.getLogger('Page result ' + str(self.process))
         try:
             result =func(self, tpage)
 
@@ -166,7 +167,7 @@ def catch_get_pr_page_results_not_deal_error(func):
 
 def catch_get_popular_repo_per_page_error(func):
     def wrapper(self, language, page, per_page, times=0):
-        logger = logging.getLogger('Popular page ' + threading.current_thread().name[-3:])
+        logger = logging.getLogger('Popular page ' + str(self.process))
         try:
             result =func(self, language, page, per_page)
 

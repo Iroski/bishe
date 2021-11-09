@@ -3,7 +3,7 @@ MONGO_SERVER = "127.0.0.1"
 MONGO_PORT = 27017
 MONGO_USERNAME = None
 MONGO_PASSWD = None
-TABLE = "bug_lib"
+TABLE = "abc"
 
 """ 代理路径，推荐使用代理。系统已增加断连重试机制（5次），但非代理下仍会有极大概率失败
     免费github代理：dev_sidecar 
@@ -18,7 +18,7 @@ HTTPS_PROXY = '127.0.0.1:7890'
     程序会自动寻找上一级文件夹并拼接相对路径
     选择False,则DIFF_PATH为绝对路径
 """
-DIFF_PATH = "pr_diff\\"
+DIFF_PATH = "multi_pr_diff\\"
 DIFF_PATH_DEFAULT = True
 
 """存放仓库的位置,每一行为owner repo, 中间用/t分隔 """
@@ -31,7 +31,6 @@ LOG_PATH_DEFAULT = True
 """github token可以使同token访问次数从每小时60提升至5000"""
 token = ['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',
          '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',
-         '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',
          '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',
          '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']
 

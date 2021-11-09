@@ -19,7 +19,7 @@ diff_header = {'User-Agent': 'Mozilla/5.0',
                'Accept': 'application/vnd.github.VERSION.diff'
                }
 pr_header = {'User-Agent': 'Mozilla/5.0',
-             'Authorization': 'token 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',
+             'Authorization': 'token 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',
              'Content-Type': 'application/json',
              'Accept': 'application/vnd.github.v3+json'
              }
@@ -53,13 +53,13 @@ proxies = {'http': '127.0.0.1:1181', 'https': '127.0.0.1:1181'}
 # print(result)
 
 '''test per diff'''
-# url = 'https://api.github.com/repos/{owner}/{repo}/pulls/{number}'.format(
-#             owner="google", repo="guava",number=5698)
-# proxies = {'http': '127.0.0.1:7890', 'https': '127.0.0.1:7890'}
-# r = requests.get(url, headers=pr_header, proxies=proxies)
-# result = r.json()
-# print(result)
-# print(result['merged_at'])
+url = 'https://api.github.com/repos/{owner}/{repo}/pulls/{number}'.format(
+            owner="google", repo="guava",number=5698)
+proxies = {'http': '127.0.0.1:7890', 'https': '127.0.0.1:7890'}
+r = requests.get(url, headers=pr_header, proxies=proxies)
+result = r.json()
+print(result)
+print(result['merged_at'])
 
 # giao=Crawler('alibaba','druid')
 # print(giao.get_max_pr_num())

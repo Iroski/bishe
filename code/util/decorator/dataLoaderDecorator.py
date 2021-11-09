@@ -6,7 +6,7 @@ from exception.exceptions import *
 
 def catch_data_loader_error(func):
     def wrapper(self, *args, **kwargs):
-        logger = logging.getLogger('Loader ' + threading.current_thread().name[-3:])
+        logger = logging.getLogger('Loader ' + str(self.process))
         try:
             logger.info("Start: " + self.owner + " " + self.repo)
             result = func(self, *args, **kwargs)

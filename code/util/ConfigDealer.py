@@ -28,19 +28,17 @@ class ConfigDealer(object):
             os.makedirs(path)
         return path
 
-    def get_token(self):
-        self.rlock.acquire()
-        try:
-            token = config.token[self.token_pointer]
-            self.token_pointer = (self.token_pointer + 1) % self.token_size
-        finally:
-            self.rlock.release()
-        return token
+    def get_token(self,id):
+        return config.token[id]
 
-    def get_headers(self):
+    def get_token_ptr(self):
+        self.token_pointer = (self.token_pointer + 1) % self.token_size
+        return self.token_pointer
+
+    def get_headers(self,token_ptr):
         self.rlock.acquire()
         try:
-            token = self.get_token()
+            token = self.get_token(token_ptr)
             pr_header = config.pr_header
             diff_header = config.diff_header
             pr_header['Authorization'] = 'token ' + str(token)
