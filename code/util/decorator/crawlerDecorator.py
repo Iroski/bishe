@@ -96,7 +96,7 @@ def catch_get_repo_info_error(func):
 
 
 def catch_get_max_pr_num_error(func):
-    def wrapper(self, times=0,page=0):
+    def wrapper(self,page=0, times=0):
         logger = logging.getLogger('Max_pr ' + threading.current_thread().name[-3:])
         try:
             result = func(self,page)
@@ -111,10 +111,45 @@ def catch_get_max_pr_num_error(func):
             if times < 5:
                 logger.warning('Failure happen with' + self.owner + " " + self.repo)
                 times += 1
-                return wrapper(self, times,page)
+                return wrapper(self,page, times)
             else:
                 logger.error(
                     "Five time out at get repo max num with " + self.owner + " " + self.repo)
+                logger.error("token:"+self.pr_header['Authorization'])
+                logger.exception(e)
+                raise TimeOutException
+        except BaseException as e:
+            logger.error("Internal error " + self.owner + " " + self.repo)
+            logger.exception(e)
+            logger.error("Token: " + self.pr_header['Authorization'])
+            raise WebsiteException
+        except Exception as e:
+            logger.error("Error at get max num")
+            logger.error("token:" + self.pr_header['Authorization'])
+            logger.exception(e)
+            raise Exception(e)
+
+    return wrapper
+
+def catch_get_issue_error(func):
+    def wrapper(self,number, times=0):
+        logger = logging.getLogger('issue ' + threading.current_thread().name[-3:])
+        try:
+            result = func(self,number)
+            if 'message' in result:
+                logger.warning("Internal error: " + self.owner + " " + self.repo)
+                logger.warning(result['message'])
+                logger.warning("Token: " + self.pr_header['Authorization'])
+                raise RequestException
+            return result
+        except RequestException as e:
+            if times < 5:
+                logger.warning('Failure happen with' + self.owner + " " + self.repo)
+                times += 1
+                return wrapper(self,number, times)
+            else:
+                logger.error(
+                    "Five time out at get issue with " + self.owner + " " + self.repo)
                 logger.error("token:"+self.pr_header['Authorization'])
                 logger.exception(e)
                 raise TimeOutException

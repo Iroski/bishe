@@ -8,7 +8,7 @@ from util.ConfigDealer import ConfigDealer
 
 class ConsoleFilter(logging.Filter):
 
-    def filter(self, record)     -> bool:
+    def filter(self, record) -> bool:
         var = record.levelno >= logging.WARNING or record.levelno == logging.INFO
         return var
 
@@ -48,7 +48,7 @@ def init_logger():
                     'class': 'logging.StreamHandler',  # 必填，处理器对应的类
                     'level': logging.NOTSET,  # 选填，处理器的日志级别，可填字符串'info'，或者logging.INFO
                     'formatter': 'myformatter1',
-                    'filters':['consoleFilter']# 选填，这里要填写formatters字典中的键
+                    'filters': ['consoleFilter']  # 选填，这里要填写formatters字典中的键
                 },
                 'file_handler': {
                     'class': 'logging.handlers.RotatingFileHandler',  # 必填，处理器对应的类
@@ -68,4 +68,3 @@ def init_logger():
             }
     }
     logging.config.dictConfig(config)
-

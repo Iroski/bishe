@@ -29,11 +29,7 @@ LOG_PATH = "logs\\"
 LOG_PATH_DEFAULT = True
 
 """github token可以使同token访问次数从每小时60提升至5000"""
-token = ['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',
-         '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',
-         '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',
-         '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',
-         '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']
+token = ['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']
 
 """github访问请求头"""
 pr_header = {'User-Agent': 'Mozilla/5.0',
@@ -56,3 +52,8 @@ INVALID_WORD = ['面试', 'Leetcode', 'leetcode', '指南', '知识', '题目', 
                 '扫盲', 'interview', '排行榜', '教程', '学习', '成神']
 
 HOT_REPO_PER_PAGE = 60
+
+
+PY_BIN = 'F:\\anaconda3\\envs\\tf\\python.exe'
+CLIENT_FILE = './util/client/JudgeClient.py'
+CLIENT_SITE='http://127.0.0.1:5000/judge'

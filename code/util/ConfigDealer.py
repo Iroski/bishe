@@ -5,6 +5,7 @@ import os
 
 
 class ConfigDealer(object):
+    _lock=RLock()
     def __init__(self):
         self.token_pointer = 0
         self.token_size = len(config.token)
@@ -19,7 +20,10 @@ class ConfigDealer(object):
     @classmethod
     def get_instance(cls):
         if not hasattr(ConfigDealer, '_instance'):
-            ConfigDealer._instance = ConfigDealer()
+            cls._lock.acquire()
+            if not hasattr(ConfigDealer, '_instance'):
+                ConfigDealer._instance = ConfigDealer()
+            cls._lock.release()
         return ConfigDealer._instance
 
     def get_diff_path(self):
@@ -79,3 +83,11 @@ class ConfigDealer(object):
     @classmethod
     def get_per_page_for_hot_repo(cls):
         return config.HOT_REPO_PER_PAGE
+
+    @classmethod
+    def get_client_executor_and_path(cls):
+        return config.PY_BIN,config.CLIENT_FILE
+
+    @classmethod
+    def get_client_website(cls):
+        return config.CLIENT_SITE

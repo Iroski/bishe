@@ -1,3 +1,5 @@
+import json
+
 from util.ConfigDealer import ConfigDealer
 import os
 from util.decorator.crawlerDecorator import *
@@ -45,6 +47,22 @@ class Crawler(object):
         result = r.json()
         return result
 
+    @catch_get_pr_page_results_not_deal_error
+    def get_pr_page_results(self, page):
+        url = 'https://api.github.com/repos/{owner}/{repo}/pulls?state=closed&page={page}&direction=asc'.format(
+            owner=self.owner, repo=self.repo, page=page)
+        r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
+        result = r.json()
+        return result
+
+    @catch_get_issue_error
+    def get_issue(self, number):
+        url = 'https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}'.format(
+            owner=self.owner, repo=self.repo, issue_number=str(number))
+        r = requests.get(url, headers=self.pr_header, proxies=self.proxies)
+        result = r.json()
+        return result
+
     @catch_deal_diff_error
     def deal_diff(self, item):
 
@@ -87,5 +105,12 @@ class Crawler(object):
         url = 'https://api.github.com/search/repositories?q=language:{language}&sort=stars&page={page}' \
               '&per_page={per_page}'.format(language=language, page=page, per_page=per_page)
         r = requests.get(url, headers=self.configDealer.get_headers()[0], proxies=self.proxies)
+        result = r.json()
+        return result
+
+    def get_judgement(self, word):
+        url = ConfigDealer.get_client_website()
+        data = {'word': word}
+        r = requests.post(url, json=json.dumps(data))
         result = r.json()
         return result

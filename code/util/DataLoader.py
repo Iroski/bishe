@@ -4,6 +4,7 @@ from util.DataGenerator import DataGenerator
 from service.DataService import DataService
 from service.Crawler import Crawler
 from util.decorator.dataLoaderDecorator import catch_data_loader_error
+from util.DataSetGenerator import DataSetGenerator
 from pprint import pprint
 import threading
 
@@ -18,17 +19,23 @@ class DataLoader:
         self.crawler = Crawler(owner, repo)
 
     def get_pr_page_results(self) -> list:
-        page=1
+        page = 1
 
-        items=self.crawler.get_pr_page_results_not_deal(page)
-        while len(items) !=0:
+        items = self.crawler.get_pr_page_results_not_deal(page)
+        while len(items) != 0:
             result = []
             for item in items:
-                result.append(DataGenerator.generate_diff_data(item))
-            yield result
-            page+=1
-            items = self.crawler.get_pr_page_results_not_deal(page)
+                tempItem = DataGenerator.generate_diff_data(item)
+                tempItem['full_str'] = DataSetGenerator.generate_set_info(tempItem, self.crawler)
 
+                judgement = self.crawler.get_judgement(tempItem['full_str'])
+                tempItem['judge_result'] = judgement['result']
+                tempItem['posssibility'] = judgement['probability']
+
+                result.append(tempItem)
+            yield result
+            page += 1
+            items = self.crawler.get_pr_page_results_not_deal(page)
 
     @catch_data_loader_error
     def get_result(self):
@@ -37,12 +44,14 @@ class DataLoader:
             if is_latest:
                 return REPO_IS_LATEST
             for results in self.get_pr_page_results():
-                if len(results) !=0:
+                if len(results) != 0:
                     if results[-1]["number"] <= dbMaxNum:
                         continue
                     merged_result = []
                     for i in range(len(results)):
-                        if results[i]['merged_at'] is None:  # 当前第i项是已有的或者被关闭没有合并
+                        # if results[i]['merged_at'] is None:  # 当前第i项是已有的或者被关闭没有合并
+                        #     continue
+                        if results[i]['judge_result'] != 'bug':
                             continue
                         # 5次访问失败抛出DiffException异常，停止该repo爬取,爬取下一个
                         # 如果是反爬问题会在下一个repo验证中被拦截，停止系统
