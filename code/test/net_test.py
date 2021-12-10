@@ -53,11 +53,16 @@ proxies = {'http': '127.0.0.1:1181', 'https': '127.0.0.1:1181'}
 # print(result)
 
 '''test per diff'''
-# url = 'https://api.github.com/repos/{owner}/{repo}/pulls/{number}'.format(
-#             owner="google", repo="guava",number=5698)
-# proxies = {'http': '127.0.0.1:7890', 'https': '127.0.0.1:7890'}
-# r = requests.get(url, headers=pr_header, proxies=proxies)
-# result = r.json()
+owner="google"
+repo="guava"
+number=5691
+url = 'https://api.github.com/repos/{owner}/{repo}/pulls/{number}'.format(
+            owner=owner, repo=repo,number=number)
+proxies = {'http': '127.0.0.1:7890', 'https': '127.0.0.1:7890'}
+r = requests.get(url, headers=pr_header, proxies=proxies)
+result = r.json()
+with open('test\\'+owner+'_'+repo+'_'+str(number)+'.json','w') as f:
+    json.dump(result,f)
 # print(result)
 # print(result['merged_at'])
 
